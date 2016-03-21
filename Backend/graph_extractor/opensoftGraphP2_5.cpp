@@ -76,6 +76,7 @@ void DFStryall(int x,int y){
 int main(int argc,char **argv){
 	string nameGraph=argv[1];
 	string dataGraph=argv[2];
+	string finalPath=argv[3];
 	char buf[1024];
 	strcpy(buf,nameGraph.c_str());
 	src=imread(buf);
@@ -83,22 +84,26 @@ int main(int argc,char **argv){
 	FILE *ftr=fopen(buf,"r");
 	vector<pair<int,pair<int,int> > > collectionPoints;
 	fscanf(ftr,"%d%d%d%d",&minx,&miny,&maxx,&maxy);
+	int minx1=minx;
+	int miny1=miny;
+	int maxx1=maxx;
+	int maxy1=maxy;
 	int temp1=0;
 	temp1=DFS(minx,miny);
 	collectionPoints.push_back(make_pair(temp1,make_pair(minx,miny)));
-	printf("%d..%d\n",temp1,src.rows*src.cols);
+	// printf("%d..%d\n",temp1,src.rows*src.cols);
 	memset(pixels,0,sizeof(pixels));
 	temp1=DFS(minx,maxy);
 	collectionPoints.push_back(make_pair(temp1,make_pair(minx,maxy)));
-	printf("%d..%d\n",temp1,src.rows*src.cols);
+	// printf("%d..%d\n",temp1,src.rows*src.cols);
 	memset(pixels,0,sizeof(pixels));
 	temp1=DFS(maxx,miny);
 	collectionPoints.push_back(make_pair(temp1,make_pair(maxx,miny)));
-	printf("%d..%d\n",temp1,src.rows*src.cols);
+	// printf("%d..%d\n",temp1,src.rows*src.cols);
 	memset(pixels,0,sizeof(pixels));
 	temp1=DFS(maxx,maxy);
 	collectionPoints.push_back(make_pair(temp1,make_pair(maxx,maxy)));
-	printf("%d..%d\n",temp1,src.rows*src.cols);
+	// printf("%d..%d\n",temp1,src.rows*src.cols);
 	memset(pixels,0,sizeof(pixels));
 	minx=miny=INT_MAX;
 	maxx=maxy=-1;
@@ -107,15 +112,49 @@ int main(int argc,char **argv){
 	reverse(collectionPoints.begin(),collectionPoints.end());
 	DFStryall(collectionPoints[0].second.first,collectionPoints[0].second.second);
 	circle(src,(Point2f){collectionPoints[0].second.first,collectionPoints[0].second.second},1,Scalar(255), 2, 8, 0);
-	circle(src,(Point2f){minx,maxy},1,Scalar(255), 2, 8, 0);
-	circle(src,(Point2f){minx,miny},1,Scalar(255), 2, 8, 0);
-	circle(src,(Point2f){maxx,miny},1,Scalar(255), 2, 8, 0);
-	circle(src,(Point2f){maxx,maxy},1,Scalar(255), 2, 8, 0);
+	// circle(src,(Point2f){minx,maxy},1,Scalar(255), 2, 8, 0);
+	// circle(src,(Point2f){minx,miny},1,Scalar(255), 2, 8, 0);
+	// circle(src,(Point2f){maxx,miny},1,Scalar(255), 2, 8, 0);
+	// circle(src,(Point2f){maxx,maxy},1,Scalar(255), 2, 8, 0);
 
- 	printf("%d..%d..%d..%d\n",minx,miny,maxx,maxy);
+	circle(src,(Point2f){minx1,maxy1},1,Scalar(50,50,50), 2, 8, 0);
+	circle(src,(Point2f){minx1,miny1},1,Scalar(50,50,50), 2, 8, 0);
+	circle(src,(Point2f){maxx1,miny1},1,Scalar(50,50,50), 2, 8, 0);
+	circle(src,(Point2f){maxx1,maxy1},1,Scalar(50,50,50), 2, 8, 0);
+
+
+	if(abs(minx-minx1)<=100 && abs(miny-miny1)<=100 && abs(maxx-maxx1)<=100 && abs(maxy-maxy1)<=100 ){
+		//qwe
+	}
+	else{
+		minx=minx1;
+		miny=miny1;
+		maxx=maxx1;
+		maxy=maxy1;
+	}
+
+	if(minx1>=minx && minx1<=maxy && miny1>=miny && miny1<=maxy){
+		if(maxx1<=maxx && maxx1>=minx && maxy1<=maxy && maxy1>=miny){
+			minx=minx1;
+			miny=miny1;
+			maxx=maxx1;
+			maxy=maxy1;
+		}
+	}
+
+	circle(src,(Point2f){minx,maxy},1,Scalar(150,0,0), 2, 8, 0);
+	circle(src,(Point2f){minx,miny},1,Scalar(150,0,0), 2, 8, 0);
+	circle(src,(Point2f){maxx,miny},1,Scalar(150,0,0), 2, 8, 0);
+	circle(src,(Point2f){maxx,maxy},1,Scalar(150,0,0), 2, 8, 0);
+
+
+ 	// printf("%d..%d..%d..%d\n",minx,miny,maxx,maxy);
  	// namedWindow( "detected lines",  WINDOW_NORMAL);
  	// imshow("detected lines",src);
  	// waitKey(0);
  	ftr=fopen(buf,"w");
  	fprintf(ftr, "%d\n%d\n%d\n%d\n",minx,miny,maxx,maxy);
+ 	strcpy(buf,finalPath.c_str());
+ 	ftr=fopen(buf,"w");
+  	fprintf(ftr, "%d\n%d\n%d\n%d\n",minx,miny,maxx,maxy);
 }
